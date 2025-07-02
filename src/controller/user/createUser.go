@@ -5,8 +5,8 @@ import (
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
-	"github.com/LaviqueDias/api-crud-go/src/model/request"
-	"github.com/LaviqueDias/api-crud-go/src/model/response"
+	"github.com/LaviqueDias/api-crud-go/src/controller/model/request"
+	"github.com/LaviqueDias/api-crud-go/src/controller/model/response"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
