@@ -1,17 +1,17 @@
 package routes
 
 import (
-	"github.com/LaviqueDias/api-crud-go/src/controller/user"
+	"github.com/LaviqueDias/api-crud-go/src/controller"
 	"github.com/gin-gonic/gin"
 )
 
 func InitUserRoutes(r *gin.RouterGroup){
 
-	r.GET("/", user.FindAllUsers)
-	r.GET("/id/:userId", user.FindUserById)
-	r.GET("/email/:userEmail", user.FindUserByEmail)
-	r.POST("/", user.CreateUser)
-	r.PUT("/:userId", user.UpdateUser)
-	r.DELETE("/:userId", user.DeleteUser)
+	r.GET("/", controller.FindAllUsers)
+	r.GET("/id/:userId", controller.FindUserById)
+	r.GET("/email/:userEmail", controller.FindUserByEmail)
+	r.POST("/", controller.CreateUser)
+	r.PUT("/:userId", controller.UpdateUser)
+	r.DELETE("/:userId", controller.DeleteUser)
 
 }
