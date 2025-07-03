@@ -4,27 +4,59 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 
-	"github.com/LaviqueDias/api-crud-go/src/configuration/rest_err"
 )
 
-type UserDomain struct {
-    Name      string    
-    Email     string    
-    Password  string    
-    Role      string    
-    Active    bool      
-}
-
-func(ud *UserDomain) EncryptPassword(){
-	hash := md5.New()
-	defer hash.Reset()
-	hash.Write([]byte(ud.Password))
-	ud.Password = hex.EncodeToString(hash.Sum(nil))
-}
-
 type UserDomainInterface interface {
-    CreateUser() *rest_err.RestErr
-    UpdateUser(string) *rest_err.RestErr
-    FindUser(string) (UserDomain, *rest_err.RestErr)
-    DeleteUser(string) *rest_err.RestErr
+    GetEmail() string
+    GetPassword() string
+    GetName() string
+    GetRole() string
+    IsActive() bool
+
+    EncryptPassword()
 }
+type userDomain struct {
+    name      string    
+    email     string    
+    password  string    
+    role      string    
+    active    bool      
+}
+
+func (ud *userDomain) GetName() string {
+	return ud.name
+}
+
+func (ud *userDomain) GetEmail() string {
+	return ud.email
+}
+
+func (ud *userDomain) GetPassword() string {
+	return ud.password
+}
+
+func (ud *userDomain) GetRole() string {
+	return ud.role
+}
+
+func (ud *userDomain) IsActive() bool {
+	return ud.active
+}
+
+func NewUserDomain(name, email, password, role string, active bool) UserDomainInterface {
+	return &userDomain{
+		name:     name,
+		email:    email,
+		password: password,
+		role:     role,
+		active:   active,
+	}
+}
+
+func(ud *userDomain) EncryptPassword(){
+    hash := md5.New()
+    defer hash.Reset()
+    hash.Write([]byte(ud.password))
+    ud.password = hex.EncodeToString(hash.Sum(nil))
+}
+

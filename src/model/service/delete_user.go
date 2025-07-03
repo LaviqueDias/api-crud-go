@@ -1,7 +1,7 @@
-package model
+package service
 
 import "github.com/LaviqueDias/api-crud-go/src/configuration/rest_err"
 
-func(ud *UserDomain) UpdateUser(string) (*rest_err.RestErr){
+func(ud *userDomainService) DeleteUser(string) *rest_err.RestErr{
 	return nil
 }

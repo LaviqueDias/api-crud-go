@@ -1,4 +1,4 @@
-package model
+package service
 
 import (
 	"fmt"
@@ -6,13 +6,15 @@ import (
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/rest_err"
 	"go.uber.org/zap"
+	"github.com/LaviqueDias/api-crud-go/src/model"
 )
 
 
-func(ud *UserDomain) CreateUser(UserDomain) *rest_err.RestErr{
+func(ud *userDomainService) CreateUser(userDomain model.UserDomainInterface) *rest_err.RestErr{
+	
 	logger.Info("Init createUser model", zap.String("journey","createUser"))
 
-	ud.EncryptPassword()
+	userDomain.EncryptPassword()
 	fmt.Println(ud)
 	return nil
 }

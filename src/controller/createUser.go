@@ -1,15 +1,15 @@
 package controller
 
 import (
-	"time"
-
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
 	"github.com/LaviqueDias/api-crud-go/src/controller/model/request"
-	"github.com/LaviqueDias/api-crud-go/src/controller/model/response"
+	"github.com/LaviqueDias/api-crud-go/src/model"
+	"github.com/LaviqueDias/api-crud-go/src/model/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
 
 func CreateUser(c *gin.Context){
 	logger.Info("Init CreateUser controller",
@@ -27,20 +27,25 @@ func CreateUser(c *gin.Context){
 		return
 	}
 
-	userResponse := response.UserResponse{
-		ID:        "te",
-		Name:      userRequest.Name,
-		Email:     userRequest.Email,
-		Role:      userRequest.Role,
-		Active:    userRequest.Active,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	domain := model.NewUserDomain(
+		userRequest.Name,
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Role,
+		userRequest.Active,
+	)
+	service := service.NewUserDomainService()
+	if err := service.CreateUser(domain); err != nil{
+		logger.Info("Failed in created user",
+		zap.String("journey", "createUser"),
+	)
+		c.JSON(err.Code, err)
 	}
 
 	logger.Info("User created successfully",
 		zap.String("journey", "createUser"),
 	)
 
-	c.JSON(200, userResponse)
+	c.JSON(200, "")
 
 }
