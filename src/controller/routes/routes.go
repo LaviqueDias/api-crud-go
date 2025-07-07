@@ -5,13 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitUserRoutes(r *gin.RouterGroup){
+func InitUserRoutes(r *gin.RouterGroup, userController controller.UserControllerInterface){
 
-	r.GET("/", controller.FindAllUsers)
-	r.GET("/id/:userId", controller.FindUserById)
-	r.GET("/email/:userEmail", controller.FindUserByEmail)
-	r.POST("/", controller.CreateUser)
-	r.PUT("/:userId", controller.UpdateUser)
-	r.DELETE("/:userId", controller.DeleteUser)
+	//r.GET("/", userController.FindAllUsers)
+	r.GET("/id/:userId", userController.FindUserById)
+	r.GET("/email/:userEmail", userController.FindUserByEmail)
+	r.POST("/", userController.CreateUser)
+	r.PUT("/:userId", userController.UpdateUser)
+	r.DELETE("/:userId", userController.DeleteUser)
 
 }

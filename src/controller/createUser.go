@@ -5,13 +5,13 @@ import (
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
 	"github.com/LaviqueDias/api-crud-go/src/controller/model/request"
 	"github.com/LaviqueDias/api-crud-go/src/model"
-	"github.com/LaviqueDias/api-crud-go/src/model/service"
+	"github.com/LaviqueDias/api-crud-go/src/view"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
 
-func CreateUser(c *gin.Context){
+func (uc *userControllerInterface) CreateUser(c *gin.Context){
 	logger.Info("Init CreateUser controller",
 		zap.String("journey", "createUser"),
 	)
@@ -34,8 +34,7 @@ func CreateUser(c *gin.Context){
 		userRequest.Role,
 		userRequest.Active,
 	)
-	service := service.NewUserDomainService()
-	if err := service.CreateUser(domain); err != nil{
+	if err := uc.service.CreateUser(domain); err != nil{
 		logger.Info("Failed in created user",
 		zap.String("journey", "createUser"),
 	)
@@ -46,6 +45,6 @@ func CreateUser(c *gin.Context){
 		zap.String("journey", "createUser"),
 	)
 
-	c.JSON(200, "")
+	c.JSON(200, view.ConvertDomainToResponse(domain))
 
 }
