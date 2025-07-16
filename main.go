@@ -8,6 +8,7 @@ import (
 	"github.com/LaviqueDias/api-crud-go/src/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -17,7 +18,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	database := mysqldb.Connection()
+	logger.Info("Init Connection to mysql", zap.String("journey", "connectionToDB"),)
+	database, err := mysqldb.Connection()
+	if err != nil {
+		logger.Info("Error connecting to MySQL",
+		zap.String("journey", "connectionToDB"),)
+		panic(err)
+	}
 	defer mysqldb.CloseConnection()
 	
 	userController := initDependencies(database)
