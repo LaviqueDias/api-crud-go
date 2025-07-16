@@ -25,6 +25,7 @@ func main() {
 		zap.String("journey", "connectionToDB"),)
 		panic(err)
 	}
+	logger.Info("Connection to mysql successfully", zap.String("journey", "connectionToDB"),)
 	defer mysqldb.CloseConnection()
 	
 	userController := initDependencies(database)

@@ -13,5 +13,10 @@ func (us *userServiceInterface) CreateUser(user *model.User) (*model.User, *rest
 	)
 
 	user.EncryptPassword()
+
+	logger.Info("CreateUser service executed succesfully", 
+		zap.String("journey", "createUser"),
+	)
+	
 	return user, nil
 }
