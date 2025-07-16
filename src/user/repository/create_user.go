@@ -8,7 +8,7 @@ import (
 )
 
 func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *rest_err.RestErr) {
-	logger.Info("Init CreateUser controller",
+	logger.Info("Init CreateUser repository",
 		zap.String("journey", "createUser"),
 	)
 

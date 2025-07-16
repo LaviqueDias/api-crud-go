@@ -8,10 +8,10 @@ import (
 )
 
 func (us *userServiceInterface) CreateUser(user *model.User) (*model.User, *rest_err.RestErr){
-	logger.Info("Init CreateUser controller",
+	logger.Info("Init CreateUser service",
 		zap.String("journey", "createUser"),
 	)
-	
+
 	user.EncryptPassword()
 	return user, nil
 }

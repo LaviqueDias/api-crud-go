@@ -7,15 +7,15 @@ import(
 
 var db *sql.DB
 
-func Connection() *sql.DB {
+func Connection() (*sql.DB, error) {
 	if db == nil {
 		var err error
 		db, err = sql.Open("mysql", "root:root@tcp(localhost:3307)/apicrudgo")
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
-	return db
+	return db, nil
 }
 
 func CloseConnection() {

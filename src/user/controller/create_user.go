@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
 	"github.com/LaviqueDias/api-crud-go/src/user/model"
@@ -38,7 +40,7 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context){
 	logger.Info("CreateUser controller executed succesfully", 
 		zap.String("journey", "createUser"),
 	)
-	print("userResult", userResult)
+	fmt.Println("User created successfully:", userResult)
 	c.JSON(200, model.UserToUserResponse(userResult))
 
 }
