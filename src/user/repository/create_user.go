@@ -12,5 +12,16 @@ func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *r
 		zap.String("journey", "createUser"),
 	)
 
+	stmt, err := ur.databaseConnection.Prepare("insert into products(id, name, price) values(?, ?, ?)") 
+	if err != nil{
+		return nil, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.Name, user)
+	if err != nil{
+		return nil, err
+	}
+
 	return nil, nil
 }
