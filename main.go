@@ -3,10 +3,9 @@ package main
 import (
 	"log"
 
+	mysqldb "github.com/LaviqueDias/api-crud-go/src/configuration/database/mysql"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
-	"github.com/LaviqueDias/api-crud-go/src/controller"
-	"github.com/LaviqueDias/api-crud-go/src/controller/routes"
-	"github.com/LaviqueDias/api-crud-go/src/model/service"
+	"github.com/LaviqueDias/api-crud-go/src/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -18,8 +17,10 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	service := service.NewUserDomainService()
-	userController := controller.NewUserControllerInterface(service)
+	database := mysqldb.Connection()
+	defer mysqldb.CloseConnection()
+	
+	userController := initDependencies(database)
 
 	router := gin.Default()
 	api := router.Group("/api")
