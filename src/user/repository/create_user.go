@@ -8,30 +8,55 @@ import (
 )
 
 func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *rest_err.RestErr) {
-	logger.Info("Init CreateUser repository",
-		zap.String("journey", "createUser"),
-	)
+    logger.Info("Init CreateUser repository",
+        zap.String("journey", "createUser"),
+    )
 
-	stmt, err := ur.databaseConnection.Prepare("insert into users(name, email, password, role, active) values(?, ?, ?, ?, ?)") 
-	if err != nil{
-		logger.Error("Error trying to create user",
-			err,
-			zap.String("journey", "createUser"))
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
-	defer stmt.Close()
+    // 1) Insere o usuário (sem created_at/updated_at nem ID)
+    query := `INSERT INTO users(name, email, password, role, active)
+              VALUES(?, ?, ?, ?, ?)`
+    result, err := ur.databaseConnection.Exec(
+        query,
+        user.Name,
+        user.Email,
+        user.Password,
+        user.Role,
+        user.Active,
+    )
+    if err != nil {
+        logger.Error("Error trying to insert user",
+            err,
+            zap.String("journey", "createUser"),
+        )
+        return nil, rest_err.NewInternalServerError(err.Error())
+    }
 
-	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Role, user.Active)
-	if err != nil{
-		logger.Error("Error trying to create user",
-			err,
-			zap.String("journey", "createUser"))
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
+    // 2) Captura o ID gerado
+    lastID, err := result.LastInsertId()
+    if err != nil {
+        logger.Error("Error getting last insert id",
+            err,
+            zap.String("journey", "createUser"),
+        )
+        return nil, rest_err.NewInternalServerError(err.Error())
+    }
+    user.ID = int(lastID)
 
-	logger.Info(
-		"CreateUser repository executed successfully",
-		zap.String("journey", "createUser"))
+    // 3) Busca created_at e updated_at pelo ID
+    row := ur.databaseConnection.QueryRow(
+        "SELECT created_at, updated_at FROM users WHERE id = ?",
+        lastID,
+    )
+    if err := row.Scan(&user.CreatedAt, &user.UpdatedAt); err != nil {
+        logger.Error("Error scanning timestamps",
+            err,
+            zap.String("journey", "createUser"),
+        )
+        return nil, rest_err.NewInternalServerError(err.Error())
+    }
 
-	return user, nil
+    logger.Info("CreateUser repository executed successfully",
+        zap.String("journey", "createUser"),
+    )
+    return user, nil
 }

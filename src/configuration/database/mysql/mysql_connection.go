@@ -12,7 +12,7 @@ func Connection() (*sql.DB, error) {
 	
 	if db == nil {
 		var err error
-		db, err = sql.Open("mysql", "root:root@tcp(localhost:3307)/apicrudgo")
+		db, err = sql.Open("mysql", "root:root@tcp(localhost:3307)/apicrudgo?charset=utf8mb4&parseTime=true&loc=Local")
 		if err != nil {
 			return nil, err
 		}
