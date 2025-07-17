@@ -49,3 +49,7 @@ func NewUnauthorizedError(message string) *RestErr{
 func NewForbiddenError(message string) *RestErr{
 	return NewRestErr(message, "forbidden", http.StatusForbidden, nil)
 }
+
+func NewConflictError(message string) *RestErr{
+	return NewRestErr(message, "conflict", http.StatusConflict, nil)
+}
