@@ -14,9 +14,17 @@ func (us *userServiceInterface) CreateUser(user *model.User) (*model.User, *rest
 
 	user.EncryptPassword()
 
+	user, err := us.repository.CreateUser(user)
+	if err != nil {
+		logger.Error("Error trying to call repository",
+			err,
+			zap.String("journey", "createUser"))
+		return nil, err
+	}
+	
 	logger.Info("CreateUser service executed succesfully", 
 		zap.String("journey", "createUser"),
 	)
 	
-	return user, nil
+	return user, err
 }

@@ -13,6 +13,7 @@ func UserRequestToUser(userRequest UserRequest) *User {
 	return &User{
 		Name:      userRequest.Name,
 		Email:     userRequest.Email,
+		Password: userRequest.Password,
 		Role:      userRequest.Role,
 		Active:    userRequest.Active,
 	}

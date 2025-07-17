@@ -12,16 +12,26 @@ func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *r
 		zap.String("journey", "createUser"),
 	)
 
-	stmt, err := ur.databaseConnection.Prepare("insert into products(id, name, price) values(?, ?, ?)") 
+	stmt, err := ur.databaseConnection.Prepare("insert into users(name, email, password, role, active) values(?, ?, ?, ?, ?)") 
 	if err != nil{
-		return nil, err
+		logger.Error("Error trying to create user",
+			err,
+			zap.String("journey", "createUser"))
+		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.Name, user)
+	_, err = stmt.Exec(user.Name, user.Email, user.Password, user.Role, user.Active)
 	if err != nil{
-		return nil, err
+		logger.Error("Error trying to create user",
+			err,
+			zap.String("journey", "createUser"))
+		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
-	return nil, nil
+	logger.Info(
+		"CreateUser repository executed successfully",
+		zap.String("journey", "createUser"))
+
+	return user, nil
 }
