@@ -1,6 +1,5 @@
 package model
 
-import "time"
 
 type UserRequest struct {
 	Name     string `json:"name" binding:"required,min=4,max=100"`
@@ -16,7 +15,5 @@ func UserRequestToUser(userRequest UserRequest) *User {
 		Email:     userRequest.Email,
 		Role:      userRequest.Role,
 		Active:    userRequest.Active,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
 	}
 }
