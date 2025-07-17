@@ -5,6 +5,7 @@ import (
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	_ "github.com/go-sql-driver/mysql"
+	"go.uber.org/zap"
 ) 
 
 var db *sql.DB
@@ -19,7 +20,7 @@ func Connection() (*sql.DB, error) {
 		}
 		if _, err := db.Exec("SET time_zone = '-03:00'"); err != nil {
             // só um aviso, não trava a aplicação
-            logger.Error("warning: não foi possível ajustar time_zone da sessão: %v", err)
+            logger.Error("warning: não foi possível ajustar time_zone da sessão: %v", err, zap.String("journey", "connectionToDB"),)
         }
 	}
 	return db, nil
