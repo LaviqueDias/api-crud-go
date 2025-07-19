@@ -18,4 +18,5 @@ type userControllerInterface struct {
 type UserControllerInterface interface {
 	CreateUser(c *gin.Context)
 	GetAllUsers(c *gin.Context)
+	DeleteUserById(c *gin.Context)
 }

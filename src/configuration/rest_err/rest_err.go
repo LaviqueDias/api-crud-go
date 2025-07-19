@@ -53,3 +53,7 @@ func NewForbiddenError(message string) *RestErr{
 func NewConflictError(message string) *RestErr{
 	return NewRestErr(message, "conflict", http.StatusConflict, nil)
 }
+
+func NewNotFoundError(message string) *RestErr{
+	return NewRestErr(message, "not_found", http.StatusNotFound, nil)
+}

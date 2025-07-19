@@ -19,4 +19,5 @@ type userServiceInterface struct {
 type UserServiceInterface interface {
 	CreateUser(user *model.User) ([]*model.User, *rest_err.RestErr)
 	GetAllUsers() ([]*model.User, *rest_err.RestErr)
+	DeleteUserById(int) ([]*model.User, *rest_err.RestErr)
 }
