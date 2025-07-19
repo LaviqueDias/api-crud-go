@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
+	"github.com/LaviqueDias/api-crud-go/src/user/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -19,10 +20,15 @@ func (uc *userControllerInterface) GetAllUsers(c *gin.Context) {
 		c.JSON(err.Code, err)
 		return
 	}
-
+	
+	responses := make([]model.UserResponse, len(users))
+    for i, u := range users {
+		responses[i] = model.UserToUserResponse(u)
+    }
+	
 	logger.Info("GetAllUsers controller executed succesfully", 
 		zap.String("journey", "getAllUsers"),
 	)
 
-	c.JSON(200, users)
+	c.JSON(200, responses)
 }

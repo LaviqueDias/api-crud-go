@@ -19,5 +19,5 @@ type userRepositoryInterface struct {
 
 type UserRepositoryInterface interface {
 	CreateUser(user *model.User) (*model.User, *rest_err.RestErr)
-	GetAllUsers() (*[]model.User, *rest_err.RestErr)
+	GetAllUsers() ([]*model.User, *rest_err.RestErr)
 }

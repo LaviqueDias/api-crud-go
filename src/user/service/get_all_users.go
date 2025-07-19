@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (us *userServiceInterface) GetAllUsers() (*[]model.User, *rest_err.RestErr) {
+func (us *userServiceInterface) GetAllUsers() ([]*model.User, *rest_err.RestErr) {
 	logger.Info("Init GetAllUsers service",
 		zap.String("journey", "getAllUsers"),
 	)
