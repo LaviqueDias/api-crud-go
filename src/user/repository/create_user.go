@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *rest_err.RestErr) {
+func (ur *userRepositoryInterface) CreateUser(user *model.User) ([]*model.User, *rest_err.RestErr) {
     logger.Info("Init CreateUser repository",
         zap.String("journey", "createUser"),
     )
@@ -58,5 +58,6 @@ func (ur *userRepositoryInterface) CreateUser(user *model.User) (*model.User, *r
     logger.Info("CreateUser repository executed successfully",
         zap.String("journey", "createUser"),
     )
-    return user, nil
+
+    return ur.GetAllUsers()
 }

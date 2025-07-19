@@ -7,14 +7,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (us *userServiceInterface) CreateUser(user *model.User) (*model.User, *rest_err.RestErr){
+func (us *userServiceInterface) CreateUser(user *model.User) ([]*model.User, *rest_err.RestErr){
 	logger.Info("Init CreateUser service",
 		zap.String("journey", "createUser"),
 	)
 
 	user.EncryptPassword()
 
-	user, err := us.repository.CreateUser(user)
+	users, err := us.repository.CreateUser(user)
 	if err != nil {
 		logger.Error("Error trying to call repository",
 			err,
@@ -26,5 +26,5 @@ func (us *userServiceInterface) CreateUser(user *model.User) (*model.User, *rest
 		zap.String("journey", "createUser"),
 	)
 	
-	return user, err
+	return users, err
 }

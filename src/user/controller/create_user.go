@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
@@ -29,7 +28,7 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context){
 
 	user := model.UserRequestToUser(userRequest)
 
-	userResult, err := uc.service.CreateUser(user)
+	users, err := uc.service.CreateUser(user)
 	if err != nil{
 		logger.Error("Error trying to call CreateUser service", err,
 		zap.String("journey", "createUser"),
@@ -37,10 +36,15 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context){
 		c.JSON(err.Code, err)
 	}
 
+	responses := make([]model.UserResponse, len(users))
+    for i, u := range users {
+		responses[i] = model.UserToUserResponse(u)
+    }
+
 	logger.Info("CreateUser controller executed succesfully", 
 		zap.String("journey", "createUser"),
 	)
-	fmt.Println("User created successfully:", userResult)
-	c.JSON(200, model.UserToUserResponse(userResult))
+
+	c.JSON(200, responses)
 
 }
