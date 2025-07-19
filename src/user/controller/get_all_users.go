@@ -10,4 +10,19 @@ func (uc *userControllerInterface) GetAllUsers(c *gin.Context) {
 	logger.Info("Init GetAllUsers controller",
 		zap.String("journey", "getAllUsers"),
 	)
+
+	users, err := uc.service.GetAllUsers()
+	if err != nil {
+		logger.Error("Error trying to call GetAllUsers service", err,
+			zap.String("journey", "getAllUsers"),
+		)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	logger.Info("GetAllUsers controller executed succesfully", 
+		zap.String("journey", "getAllUsers"),
+	)
+
+	c.JSON(200, users)
 }
