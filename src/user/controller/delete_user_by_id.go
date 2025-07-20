@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
@@ -45,6 +46,6 @@ func (uc *userControllerInterface) DeleteUserById(c *gin.Context) {
         zap.String("journey", "deleteUserById"),
         zap.Int("user_id", id),
     )
-	
-    c.JSON(200, responses)
+
+    c.JSON(http.StatusOK, responses)
 }

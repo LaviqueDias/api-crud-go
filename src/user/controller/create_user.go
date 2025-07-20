@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/configuration/validation"
@@ -45,6 +46,6 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context){
 		zap.String("journey", "createUser"),
 	)
 
-	c.JSON(200, responses)
+	c.JSON(http.StatusOK, responses)
 
 }

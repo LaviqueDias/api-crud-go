@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	"github.com/LaviqueDias/api-crud-go/src/user/model"
 	"github.com/gin-gonic/gin"
@@ -30,5 +32,5 @@ func (uc *userControllerInterface) GetAllUsers(c *gin.Context) {
 		zap.String("journey", "getAllUsers"),
 	)
 
-	c.JSON(200, responses)
+	c.JSON(http.StatusOK, responses)
 }
