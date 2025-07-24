@@ -23,3 +23,10 @@ func (u *User) EncryptPassword() {
 	hash.Write([]byte(u.Password))
 	u.Password = hex.EncodeToString(hash.Sum(nil))
 }
+
+func (u *User) ComparePassword(password string) bool {
+	hash := md5.New()
+	defer hash.Reset()
+	hash.Write([]byte(password))
+	return hex.EncodeToString(hash.Sum(nil)) == u.Password
+}
