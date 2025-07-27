@@ -22,4 +22,11 @@ type UserControllerInterface interface {
 	UpdateUser(c *gin.Context)
 	FindUserByEmail(c *gin.Context)
 	LoginUser(c *gin.Context)
+	ValidateUser(c *gin.Context)
+
+	GetUserService() service.UserServiceInterface
+}
+
+func (uc *userControllerInterface) GetUserService() service.UserServiceInterface{
+	return uc.service
 }
