@@ -56,7 +56,7 @@ func (uc *userControllerInterface) LoginUser(c *gin.Context) {
 
     // 4) Gera token JWT
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
+		"sub": user.Email,
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	})
 

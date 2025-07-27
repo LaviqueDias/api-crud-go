@@ -38,7 +38,12 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 			return
 		}
 
-		userEmail := claims["sub"].(string)
+		userEmail, ok := claims["sub"].(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token subject"})
+			return
+		}
+		logger.Info("User email extracted from token", zap.String("email", userEmail))
 
 		user, restErr := userService.FindUserByEmail(userEmail)
 		if restErr != nil {
