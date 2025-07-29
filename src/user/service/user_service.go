@@ -22,4 +22,5 @@ type UserServiceInterface interface {
 	DeleteUserById(int) ([]*model.User, *rest_err.RestErr)
 	UpdateUser(id int, user *model.User) ([]*model.User, *rest_err.RestErr)
 	FindUserByEmail(email string) (*model.User, *rest_err.RestErr)
+	LoginUser(userLogin *model.User) (string, *rest_err.RestErr)
 }

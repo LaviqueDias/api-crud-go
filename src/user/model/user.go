@@ -3,7 +3,11 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"os"
 	"time"
+
+	"github.com/LaviqueDias/api-crud-go/src/configuration/rest_err"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type User struct {
@@ -29,4 +33,21 @@ func (u *User) ComparePassword(password string) bool {
 	defer hash.Reset()
 	hash.Write([]byte(password))
 	return hex.EncodeToString(hash.Sum(nil)) == u.Password
+}
+
+func (u *User) GenerateToken() (string, *rest_err.RestErr) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": u.Email,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	if err != nil {
+		// logger.Error("Error signing JWT token", err,
+		// 	zap.String("journey", "loginUser"),
+		// )
+		return "", rest_err.NewInternalServerError("error generating token")
+	}
+
+	return tokenString, nil
 }
