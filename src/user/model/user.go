@@ -43,9 +43,6 @@ func (u *User) GenerateToken() (string, *rest_err.RestErr) {
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
-		// logger.Error("Error signing JWT token", err,
-		// 	zap.String("journey", "loginUser"),
-		// )
 		return "", rest_err.NewInternalServerError("error generating token")
 	}
 
