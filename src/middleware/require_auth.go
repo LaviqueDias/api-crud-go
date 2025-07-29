@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
+	"github.com/LaviqueDias/api-crud-go/src/configuration/rest_err"
 	"github.com/LaviqueDias/api-crud-go/src/user/service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -16,7 +16,12 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("Authorization")
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie not found"})
+			restErr := rest_err.NewUnauthorizedError("authorization cookie not found")
+			logger.Error("Cookie not found", err,
+				zap.String("journey", "RequireAuth"),
+			)
+			c.JSON(restErr.Code, restErr)
+			c.Abort()
 			return
 		}
 
@@ -28,21 +33,37 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
+			restErr := rest_err.NewUnauthorizedError("invalid or expired token")
+			logger.Error("Invalid token", err,
+				zap.String("journey", "RequireAuth"),
+			)
+			c.JSON(restErr.Code, restErr)
+			c.Abort()
 			return
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok || claims["sub"] == nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+			restErr := rest_err.NewUnauthorizedError("invalid token claims")
+			logger.Error("Invalid claims in token", nil,
+				zap.String("journey", "RequireAuth"),
+			)
+			c.JSON(restErr.Code, restErr)
+			c.Abort()
 			return
 		}
 
 		userEmail, ok := claims["sub"].(string)
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token subject"})
+			restErr := rest_err.NewUnauthorizedError("invalid token subject")
+			logger.Error("Invalid sub format in token", nil,
+				zap.String("journey", "RequireAuth"),
+			)
+			c.JSON(restErr.Code, restErr)
+			c.Abort()
 			return
 		}
+
 		logger.Info("User email extracted from token", zap.String("email", userEmail))
 
 		user, restErr := userService.FindUserByEmail(userEmail)
@@ -51,6 +72,7 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 				zap.String("journey", "RequireAuth"),
 			)
 			c.JSON(restErr.Code, restErr)
+			c.Abort()
 			return
 		}
 
@@ -58,3 +80,4 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
