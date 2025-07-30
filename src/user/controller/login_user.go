@@ -10,12 +10,12 @@ import (
 	"go.uber.org/zap"
 )
 
-// @Summary Login de usuário
-// @Description Autentica um usuário e retorna o token
-// @Tags Autenticação
+// @Summary User login
+// @Description Authenticates a user and returns a JWT token
+// @Tags Authentication
 // @Accept json
 // @Produce json
-// @Param request body model.UserLoginRequest true "Informações de login"
+// @Param request body model.UserLoginRequest true "Login information"
 // @Success 200 {object} model.UserLoginResponse
 // @Failure 401 {object} rest_err.RestErr
 // @Router /user/login [post]

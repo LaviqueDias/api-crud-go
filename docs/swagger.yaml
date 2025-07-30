@@ -3,8 +3,16 @@ definitions:
   model.UserLoginRequest:
     properties:
       email:
+        description: |-
+          Email address of the user
+          required: true
+          example: user@example.com
         type: string
       password:
+        description: |-
+          Password for the user account
+          required: true
+          example: MyS3cr3t!#
         maxLength: 50
         minLength: 6
         type: string
@@ -15,26 +23,130 @@ definitions:
   model.UserLoginResponse:
     properties:
       token:
+        description: |-
+          JWT token issued upon successful authentication
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  model.UserRequest:
+    properties:
+      active:
+        description: |-
+          Whether the user is active
+          example: true
+        type: boolean
+      email:
+        description: |-
+          Email address of the user
+          required: true
+          example: john.doe@example.com
+        type: string
+      name:
+        description: |-
+          Full name of the user
+          required: true
+          min length: 4
+          max length: 100
+          example: John Doe
+        maxLength: 100
+        minLength: 4
+        type: string
+      password:
+        description: |-
+          Password for the user account
+          required: true
+          example: MyP@ssw0rd!
+        maxLength: 50
+        minLength: 6
+        type: string
+      role:
+        description: |-
+          Role assigned to the user (admin or user)
+          required: true
+          enum: admin,user
+          example: user
+        enum:
+        - admin
+        - user
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - role
+    type: object
+  model.UserResponse:
+    properties:
+      active:
+        description: |-
+          Whether the user is active
+          example: true
+        type: boolean
+      created_at:
+        description: |-
+          Timestamp when the user was created
+          example: 2025-07-30T10:15:30Z
+        type: string
+      email:
+        description: |-
+          Email address of the user
+          example: john.doe@example.com
+        type: string
+      id:
+        description: |-
+          Unique identifier of the user
+          example: 1
+        type: integer
+      name:
+        description: |-
+          Full name of the user
+          example: John Doe
+        type: string
+      role:
+        description: |-
+          Role assigned to the user
+          example: user
+        type: string
+      updated_at:
+        description: |-
+          Timestamp when the user was last updated
+          example: 2025-07-30T12:45:00Z
         type: string
     type: object
   rest_err.Causes:
     properties:
       field:
+        description: |-
+          Name of the field that caused the error
+          example: email
         type: string
       message:
+        description: |-
+          Description of the validation error
+          example: must be a valid email address
         type: string
     type: object
   rest_err.RestErr:
     properties:
       causes:
+        description: List of specific causes or validation errors (optional)
         items:
           $ref: '#/definitions/rest_err.Causes'
         type: array
       code:
+        description: |-
+          HTTP status code
+          example: 400
         type: integer
       error:
+        description: |-
+          Machine-readable error identifier
+          example: bad_request
         type: string
       message:
+        description: |-
+          Human-readable error message
+          example: invalid user ID
         type: string
     type: object
 host: localhost:8080
@@ -44,13 +156,169 @@ info:
   title: API CRUD GO
   version: "1.0"
 paths:
+  /user:
+    get:
+      description: Retrieves a list of all registered users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with the provided information and returns a
+        list of created users
+      parameters:
+      - description: User data to be created
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Create a new user
+      tags:
+      - Users
+  /user/{userId}:
+    delete:
+      description: Deletes the user with the given ID and returns the remaining users
+      parameters:
+      - description: ID of the user to delete
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Delete a user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Updates the user information based on the given ID and returns
+        the updated user list
+      parameters:
+      - description: ID of the user to update
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Updated user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Update user by ID
+      tags:
+      - Users
+  /user/email/{userEmail}:
+    get:
+      description: Retrieves a user based on the provided email address
+      parameters:
+      - description: Email of the user to retrieve
+        in: path
+        name: userEmail
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Find user by email
+      tags:
+      - Users
   /user/login:
     post:
       consumes:
       - application/json
-      description: Autentica um usuário e retorna o token
+      description: Authenticates a user and returns a JWT token
       parameters:
-      - description: Informações de login
+      - description: Login information
         in: body
         name: request
         required: true
@@ -67,7 +335,41 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/rest_err.RestErr'
-      summary: Login de usuário
+      summary: User login
       tags:
-      - Autenticação
+      - Authentication
+  /user/logout:
+    post:
+      description: Logs out the currently authenticated user by clearing the authentication
+        cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Logout user
+      tags:
+      - Authentication
+  /user/validate:
+    get:
+      description: Returns the authenticated user's information based on the current
+        session or token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Validate user session
+      tags:
+      - Authentication
 swagger: "2.0"

@@ -9,6 +9,12 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Logout user
+// @Description Logs out the currently authenticated user by clearing the authentication cookie
+// @Tags Authentication
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /user/logout [post]
 func (uc *userControllerInterface) LogoutUser(c *gin.Context) {
 	logger.Info("Init LogoutUser controller",
         zap.String("journey", "logoutUser"),

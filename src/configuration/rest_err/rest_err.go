@@ -5,15 +5,32 @@ import (
 
 )
 
+// RestErr represents a standard error response returned by the API
 type RestErr struct {
+	// Human-readable error message
+	// example: invalid user ID
 	Message string `json:"message"`
+
+	// Machine-readable error identifier
+	// example: bad_request
 	Err string `json:"error"`
+
+	// HTTP status code
+	// example: 400
 	Code int `json:"code"`
+
+	// List of specific causes or validation errors (optional)
 	Causes []Causes `json:"causes"`
 }
 
+// Causes represents a specific field-level error detail
 type Causes struct {
+	// Name of the field that caused the error
+	// example: email
 	Field string `json:"field"`
+
+	// Description of the validation error
+	// example: must be a valid email address
 	Message string `json:"message"`
 }
 

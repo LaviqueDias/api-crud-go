@@ -10,6 +10,16 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Find user by email
+// @Description Retrieves a user based on the provided email address
+// @Tags Users
+// @Produce json
+// @Param userEmail path string true "Email of the user to retrieve"
+// @Success 200 {object} model.UserResponse
+// @Failure 400 {object} rest_err.RestErr
+// @Failure 404 {object} rest_err.RestErr
+// @Failure 500 {object} rest_err.RestErr
+// @Router /user/email/{userEmail} [get]
 func (uc *userControllerInterface) FindUserByEmail(c *gin.Context) {
 	logger.Info("Init FindUserByEmail controller",
 		zap.String("journey", "findUserByEmail"),

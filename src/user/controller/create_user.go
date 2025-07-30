@@ -10,7 +10,16 @@ import (
 	"go.uber.org/zap"
 )
 
-
+// @Summary Create a new user
+// @Description Creates a new user with the provided information and returns a list of created users
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body model.UserRequest true "User data to be created"
+// @Success 200 {array} model.UserResponse
+// @Failure 400 {object} rest_err.RestErr
+// @Failure 500 {object} rest_err.RestErr
+// @Router /user [post]
 func (uc *userControllerInterface) CreateUser(c *gin.Context){
 	logger.Info("Init CreateUser controller",
 		zap.String("journey", "createUser"),

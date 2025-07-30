@@ -15,9 +15,36 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/login": {
+        "/user": {
+            "get": {
+                "description": "Retrieves a list of all registered users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "Autentica um usuário e retorna o token",
+                "description": "Creates a new user with the provided information and returns a list of created users",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,12 +52,108 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Autenticação"
+                    "Users"
                 ],
-                "summary": "Login de usuário",
+                "summary": "Create a new user",
                 "parameters": [
                     {
-                        "description": "Informações de login",
+                        "description": "User data to be created",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/email/{userEmail}": {
+            "get": {
+                "description": "Retrieves a user based on the provided email address",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Find user by email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email of the user to retrieve",
+                        "name": "userEmail",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Authenticates a user and returns a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login information",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -54,6 +177,165 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/logout": {
+            "post": {
+                "description": "Logs out the currently authenticated user by clearing the authentication cookie",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/validate": {
+            "get": {
+                "description": "Returns the authenticated user's information based on the current session or token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Validate user session",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{userId}": {
+            "put": {
+                "description": "Updates the user information based on the given ID and returns the updated user list",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the user to update",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the user with the given ID and returns the remaining users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the user to delete",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/rest_err.RestErr"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -65,9 +347,11 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
+                    "description": "Email address of the user\nrequired: true\nexample: user@example.com",
                     "type": "string"
                 },
                 "password": {
+                    "description": "Password for the user account\nrequired: true\nexample: MyS3cr3t!#",
                     "type": "string",
                     "maxLength": 50,
                     "minLength": 6
@@ -78,6 +362,79 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "token": {
+                    "description": "JWT token issued upon successful authentication\nexample: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password",
+                "role"
+            ],
+            "properties": {
+                "active": {
+                    "description": "Whether the user is active\nexample: true",
+                    "type": "boolean"
+                },
+                "email": {
+                    "description": "Email address of the user\nrequired: true\nexample: john.doe@example.com",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Full name of the user\nrequired: true\nmin length: 4\nmax length: 100\nexample: John Doe",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 4
+                },
+                "password": {
+                    "description": "Password for the user account\nrequired: true\nexample: MyP@ssw0rd!",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 6
+                },
+                "role": {
+                    "description": "Role assigned to the user (admin or user)\nrequired: true\nenum: admin,user\nexample: user",
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "user"
+                    ]
+                }
+            }
+        },
+        "model.UserResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "Whether the user is active\nexample: true",
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "description": "Timestamp when the user was created\nexample: 2025-07-30T10:15:30Z",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Email address of the user\nexample: john.doe@example.com",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier of the user\nexample: 1",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Full name of the user\nexample: John Doe",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "Role assigned to the user\nexample: user",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "Timestamp when the user was last updated\nexample: 2025-07-30T12:45:00Z",
                     "type": "string"
                 }
             }
@@ -86,9 +443,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "field": {
+                    "description": "Name of the field that caused the error\nexample: email",
                     "type": "string"
                 },
                 "message": {
+                    "description": "Description of the validation error\nexample: must be a valid email address",
                     "type": "string"
                 }
             }
@@ -97,18 +456,22 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "causes": {
+                    "description": "List of specific causes or validation errors (optional)",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/rest_err.Causes"
                     }
                 },
                 "code": {
+                    "description": "HTTP status code\nexample: 400",
                     "type": "integer"
                 },
                 "error": {
+                    "description": "Machine-readable error identifier\nexample: bad_request",
                     "type": "string"
                 },
                 "message": {
+                    "description": "Human-readable error message\nexample: invalid user ID",
                     "type": "string"
                 }
             }

@@ -9,6 +9,13 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Get all users
+// @Description Retrieves a list of all registered users
+// @Tags Users
+// @Produce json
+// @Success 200 {array} model.UserResponse
+// @Failure 500 {object} rest_err.RestErr
+// @Router /user [get]
 func (uc *userControllerInterface) GetAllUsers(c *gin.Context) {
 	logger.Info("Init GetAllUsers controller",
 		zap.String("journey", "getAllUsers"),

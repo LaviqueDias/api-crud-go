@@ -11,6 +11,16 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Delete a user by ID
+// @Description Deletes the user with the given ID and returns the remaining users
+// @Tags Users
+// @Produce json
+// @Param userId path int true "ID of the user to delete"
+// @Success 200 {array} model.UserResponse
+// @Failure 400 {object} rest_err.RestErr
+// @Failure 404 {object} rest_err.RestErr
+// @Failure 500 {object} rest_err.RestErr
+// @Router /user/{userId} [delete]
 func (uc *userControllerInterface) DeleteUserById(c *gin.Context) {
 	logger.Info("Init DeleteUserById controller",
 		zap.String("journey", "deleteUserById"),
