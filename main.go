@@ -1,3 +1,9 @@
+// @title API CRUD GO
+// @version 1.0
+// @description API de exemplo com documentação Swagger em Go.
+// @host localhost:8080
+// @BasePath /api
+
 package main
 
 import (
@@ -10,7 +16,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
+	"github.com/swaggo/files"
+    "github.com/swaggo/gin-swagger"
+    _ "github.com/LaviqueDias/api-crud-go/docs"
 )
+
 
 func main() {
 	logger.Info("About to start user application")
@@ -34,6 +44,9 @@ func main() {
 
 	router := gin.Default()
 	api := router.Group("/api")
+
+	// Rota Swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Rotas públicas (sem middleware)
 	publicUserGroup := api.Group("/user")
