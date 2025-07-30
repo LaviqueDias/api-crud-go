@@ -14,6 +14,10 @@ import (
 
 func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		logger.Info("Init RequireAuth middleware",
+        zap.String("journey", "requireAuth"),
+    )
+
 		tokenString, err := c.Cookie("Authorization")
 		if err != nil {
 			restErr := rest_err.NewUnauthorizedError("authorization cookie not found")
@@ -77,6 +81,11 @@ func RequireAuth(userService service.UserServiceInterface) gin.HandlerFunc {
 		}
 
 		c.Set("user", user)
+
+		logger.Info("RequireAuth middleware executed successfully",
+        zap.String("journey", "requireAuth"),
+	)
+
 		c.Next()
 	}
 }

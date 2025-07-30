@@ -13,4 +13,5 @@ func InitPrivateUserRoutes(r *gin.RouterGroup, userController controller.UserCon
 	r.POST("/", userController.CreateUser)
 	r.PUT("/:userId", userController.UpdateUser)
 	r.DELETE("/:userId", userController.DeleteUserById )
+	r.POST("/logout", userController.LogoutUser)
 }
