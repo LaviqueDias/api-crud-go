@@ -2,6 +2,8 @@ package mysqldb
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 
 	"github.com/LaviqueDias/api-crud-go/src/configuration/logger"
 	_ "github.com/go-sql-driver/mysql"
@@ -14,7 +16,7 @@ func Connection() (*sql.DB, error) {
 	
 	if db == nil {
 		var err error
-		db, err = sql.Open("mysql", "root:root@tcp(localhost:3307)/apicrudgo?charset=utf8mb4&parseTime=true&loc=America%2FSao_Paulo")
+		db, err = sql.Open("mysql", GetMySQLDSN())
 		if err != nil {
 			return nil, err
 		}
@@ -30,4 +32,15 @@ func CloseConnection() {
 	if db != nil {
 		db.Close()
 	}
+}
+
+func GetMySQLDSN() string {
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	dbname := os.Getenv("DB_NAME")
+
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=America%%2FSao_Paulo",
+		user, pass, host, port, dbname)
 }
