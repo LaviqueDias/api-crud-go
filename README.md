@@ -24,6 +24,44 @@ Este projeto é um exemplo de implementação de uma API estruturada em Golang, 
 
 ## 📁 Estrutura do Projeto
 
+```bash
+API-CRUD-GO/
+├── docs/                        # 📄 Documentação Swagger gerada
+│   ├── docs.go
+│   ├── swagger.json
+│   └── swagger.yaml
+│
+├── src/                         # 💡 Código-fonte da aplicação
+│   ├── configuration/           # ⚙️ Configurações do sistema
+│   │   ├── database/            # 🔗 Conexão e migrações de banco de dados
+│   │   │   ├── migrations/      # Arquivos .sql de criação de tabelas
+│   │   │   ├── mongodb/         # (Possível suporte a MongoDB futuro)
+│   │   │   └── mysql/           # Funções de conexão com MySQL
+│   │   ├── logger/              # 📋 Log estruturado com zap
+│   │   ├── rest_err/            # 🧱 Estrutura personalizada de erros
+│   │   └── validation/          # ✅ Validações de entrada (ex: usuário)
+│   │
+│   ├── middleware/              # 🛡 Middlewares de autenticação JWT
+│   │   └── require_auth.go
+│   │
+│   ├── routes/                  # 🌐 Definição de rotas públicas e privadas
+│   │   ├── private_user_routes.go
+│   │   └── public_user_routes.go
+│   │
+│   └── user/                    # 👤 Domínio de usuários
+│       ├── controller/          # Camada de controle (entrada HTTP)
+│       ├── model/               # Estrutura dos dados 
+│       ├── repository/          # Acesso ao banco de dados
+│       └── service/             # Regras de negócio
+│
+├── .env                         # 🔐 Variáveis de ambiente (conexão DB, secret JWT)
+├── .gitignore                   # 🧹 Arquivos ignorados pelo Git
+├── go.mod / go.sum              # 📦 Gerenciamento de dependências Go
+├── init_dependencies.go         # 🔗 Injeção de dependências entre camadas
+├── main.go                      # 🚀 Ponto de entrada da aplicação
+└── README.md                    # 📝 Documentação do projeto
+```
+
 ## ⚙️ Como Rodar o Projeto
 
 ### Pré-requisitos
