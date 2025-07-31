@@ -47,6 +47,7 @@ func main() {
 
 	// Rota Swagger
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	logger.Info("Init Swagger at http://localhost:8080/swagger/index.html#/", zap.String("journey", "connectionToSwagger"))
 
 	// Rotas públicas (sem middleware)
 	publicUserGroup := api.Group("/user")
